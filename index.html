@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XsRmul Downloader v2</title>
+    <title>XsRmul DL v2</title>
     <style>
-        /* INI CSS (Baju/Tampilan) */
         body { background-color: #0d1117; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .card { background: #161b22; padding: 40px 30px; border-radius: 30px; width: 85%; max-width: 400px; text-align: center; border: 1px solid #30363d; box-shadow: 0 0 20px rgba(0,210,255,0.2); }
-        .title { font-size: 32px; font-weight: bold; color: #00d2ff; text-shadow: 0 0 10px #00d2ff; font-style: italic; }
-        .subtitle { font-size: 10px; color: #00d2ff; background: rgba(0,210,255,0.1); padding: 5px 15px; border-radius: 20px; display: inline-block; margin-bottom: 25px; letter-spacing: 1px; }
+        .card { background: #161b22; padding: 40px 30px; border-radius: 30px; width: 85%; max-width: 400px; text-align: center; border: 1px solid #30363d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .title { font-size: 32px; font-weight: bold; color: #00d2ff; font-style: italic; margin-bottom: 5px; }
+        .subtitle { font-size: 10px; color: #00d2ff; background: rgba(0,210,255,0.1); padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 25px; }
         input { width: 100%; padding: 15px; background: #0d1117; border: 1px solid #30363d; border-radius: 12px; color: white; text-align: center; margin-bottom: 20px; outline: none; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: linear-gradient(90deg, #0099ff, #00d2ff); border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:active { transform: scale(0.95); }
-        #hasil { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; display: none; }
-        .dl-btn { display: inline-block; margin-top: 10px; padding: 10px 20px; background: #fff; color: #000; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        button { width: 100%; padding: 15px; background: linear-gradient(90deg, #0099ff, #00d2ff); border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; }
+        #hasil { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; display: none; word-break: break-all; }
+        .dl-btn { display: inline-block; margin-top: 10px; padding: 12px 20px; background: #00d2ff; color: #000; text-decoration: none; border-radius: 10px; font-weight: bold; }
         .footer { margin-top: 30px; font-size: 10px; color: #8b949e; text-align: center; }
     </style>
 </head>
@@ -22,46 +20,41 @@
 
     <div class="card">
         <div class="title">XsRmul DL</div>
-        <div class="subtitle">TIKTOK DOWNLOADER</div>
-        
-        <input type="text" id="url" placeholder="Tempel link TikTok di sini...">
+        <div class="subtitle">TIKTOK DOWNLOADER FAST</div>
+        <input type="text" id="url" placeholder="Tempel link video di sini...">
         <button onclick="download()">GENERATE LINK</button>
-        
         <div id="hasil"></div>
     </div>
 
-    <div class="footer">
-        © 2026 Abdurrahman Mulia<br>
-        XsRmul Project - Barabai, HST
-    </div>
+    <div class="footer">© 2026 Abdurrahman Mulia<br>Barabai, Hulu Sungai Tengah</div>
 
     <script>
         async function download() {
             const link = document.getElementById('url').value;
             const resBox = document.getElementById('hasil');
-            if(!link) return alert("Isi linknya dulu!");
+            if(!link) return alert("Masukkan link-nya dulu!");
 
             resBox.style.display = "block";
-            resBox.innerHTML = "⌛ Sedang memproses...";
+            resBox.innerHTML = "⌛ Sedang memproses video...";
 
             try {
-                // Pakai API yang biasanya buat Bot WA (Lebih kuat)
-                const api = await fetch(`https://api.vreden.my.id/api/tiktok?url=${encodeURIComponent(link)}`);
-                const json = await api.json();
+                // MENGGUNAKAN API AGGREGATOR (Lebih Kuat)
+                const api = await fetch(`https://api.agatz.xyz/api/tiktok?url=${encodeURIComponent(link)}`);
+                const res = await api.json();
                 
-                if(json.status === 200) {
+                if(res.status === 200) {
+                    const video = res.data.data[0].url; // Ambil video tanpa WM
                     resBox.innerHTML = `
-                        <p style="color:#00d2ff;">✅ Video Berhasil!</p>
-                        <a href="${json.result.video}" class="dl-btn" target="_blank">UNDUH VIDEO</a>
+                        <p style="color:#00d2ff;">✅ Video Berhasil Ditemukan!</p>
+                        <a href="${video}" class="dl-btn" target="_blank">UNDUH SEKARANG</a>
                     `;
                 } else {
-                    resBox.innerHTML = "❌ Gagal. Cek linknya lagi.";
+                    resBox.innerHTML = "❌ API Limit. Coba lagi 1 menit lagi.";
                 }
             } catch (e) {
-                resBox.innerHTML = "⚠️ Masalah Server. Coba lagi!";
+                resBox.innerHTML = "⚠️ Masalah Koneksi API. Coba ganti link!";
             }
         }
     </script>
-
 </body>
 </html>
