@@ -8,7 +8,7 @@
         body { background-color: #0d1117; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
         .card { background: #161b22; padding: 40px 30px; border-radius: 30px; width: 85%; max-width: 400px; text-align: center; border: 1px solid #30363d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .title { font-size: 32px; font-weight: bold; color: #00d2ff; font-style: italic; }
-        .subtitle { font-size: 10px; color: #00d2ff; background: rgba(0,210,255,0.1); padding: 5px 12px; border-radius: 20px; display: inline-block; margin: 10px 0 25px 0; }
+        .subtitle { font-size: 10px; color: #00d2ff; background: rgba(0,210,255,0.1); padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 25px; }
         input { width: 100%; padding: 15px; background: #0d1117; border: 1px solid #30363d; border-radius: 12px; color: white; text-align: center; margin-bottom: 20px; outline: none; box-sizing: border-box; }
         button { width: 100%; padding: 15px; background: linear-gradient(90deg, #0099ff, #00d2ff); border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; }
         #hasil { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; display: none; }
@@ -19,37 +19,44 @@
 <body>
     <div class="card">
         <div class="title">XsRmul DL</div>
-        <div class="subtitle">TIKTOK DOWNLOADER FAST</div>
-        <input type="text" id="urlInput" placeholder="Tempel link video di sini...">
-        <button onclick="gas()">GENERATE LINK</button>
+        <div class="subtitle">TIKTOK DOWNLOADER PRO</div>
+        <input type="text" id="turl" placeholder="Tempel link video di sini...">
+        <button onclick="download()">GENERATE LINK</button>
         <div id="hasil"></div>
     </div>
     <div class="footer">© 2026 Abdurrahman Mulia<br>Barabai, Hulu Sungai Tengah</div>
 
     <script>
-        async function gas() {
-            const link = document.getElementById('urlInput').value;
+        async function download() {
+            const input = document.getElementById('turl').value;
             const resBox = document.getElementById('hasil');
-            if(!link) return alert("Linknya mana?");
+            if(!input) return alert("Link mana?");
+            
             resBox.style.display = "block";
-            resBox.innerHTML = "⌛ Mencoba Server 1...";
+            resBox.innerHTML = "⌛ Mengambil Video (Server Pro)...";
+
             try {
-                let response = await fetch(`https://api.agatz.xyz/api/tiktok?url=${encodeURIComponent(link)}`);
-                let res = await response.json();
-                if(res.status === 200) {
-                    resBox.innerHTML = `<p>✅ Server 1 Berhasil!</p><a href="${res.data.data[0].url}" class="dl-btn" target="_blank">UNDUH VIDEO</a>`;
+                // PAKAI API TINYURL AGGREGATOR
+                const response = await fetch(`https://api.vreden.my.id/api/tiktok?url=${encodeURIComponent(input)}`);
+                const res = await response.json();
+                
+                // Cek hasil dari API Vreden
+                const videoUrl = res.result.video || res.result.v_no_watermark;
+
+                if(videoUrl) {
+                    resBox.innerHTML = `
+                        <p style="color:#00d2ff;">✅ Berhasil Tembus!</p>
+                        <a href="${videoUrl}" class="dl-btn" target="_blank">UNDUH VIDEO</a>
+                    `;
                 } else {
-                    throw new Error();
+                    resBox.innerHTML = "❌ Server 1 Gagal, Mencoba Server 2...";
+                    // API CADANGAN 
+                    const res2 = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(input)}`);
+                    const data2 = await res2.json();
+                    resBox.innerHTML = `<p>✅ Server 2 Berhasil!</p><a href="https://tikwm.com${data2.data.play}" class="dl-btn" target="_blank">UNDUH VIDEO</a>`;
                 }
             } catch (e) {
-                resBox.innerHTML = "⌛ Server 1 Sibuk, Mencoba Server 2...";
-                try {
-                    let response2 = await fetch(`https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(link)}`);
-                    let res2 = await response2.json();
-                    resBox.innerHTML = `<p>✅ Server 2 Berhasil!</p><a href="${res2.result.video.noWatermark}" class="dl-btn" target="_blank">UNDUH VIDEO</a>`;
-                } catch (e2) {
-                    resBox.innerHTML = "❌ Semua Server Sibuk. Coba link video lain!";
-                }
+                resBox.innerHTML = "⚠️ Link ini sedang sulit ditembus. Coba link video lain!";
             }
         }
     </script>
