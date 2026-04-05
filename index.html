@@ -7,52 +7,49 @@
     <style>
         body { background-color: #0d1117; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
         .card { background: #161b22; padding: 40px 30px; border-radius: 30px; width: 85%; max-width: 400px; text-align: center; border: 1px solid #30363d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .title { font-size: 32px; font-weight: bold; color: #00d2ff; font-style: italic; margin-bottom: 5px; }
-        .subtitle { font-size: 10px; color: #00d2ff; background: rgba(0,210,255,0.1); padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 25px; }
+        .title { font-size: 32px; font-weight: bold; color: #00d2ff; font-style: italic; }
+        .subtitle { font-size: 10px; color: #00d2ff; background: rgba(0,210,255,0.1); padding: 5px 12px; border-radius: 20px; display: inline-block; margin: 10px 0 25px 0; }
         input { width: 100%; padding: 15px; background: #0d1117; border: 1px solid #30363d; border-radius: 12px; color: white; text-align: center; margin-bottom: 20px; outline: none; box-sizing: border-box; }
         button { width: 100%; padding: 15px; background: linear-gradient(90deg, #0099ff, #00d2ff); border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; }
-        #hasil { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; display: none; word-break: break-all; }
+        #hasil { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; display: none; }
         .dl-btn { display: inline-block; margin-top: 10px; padding: 12px 20px; background: #00d2ff; color: #000; text-decoration: none; border-radius: 10px; font-weight: bold; }
         .footer { margin-top: 30px; font-size: 10px; color: #8b949e; text-align: center; }
     </style>
 </head>
 <body>
-
     <div class="card">
         <div class="title">XsRmul DL</div>
         <div class="subtitle">TIKTOK DOWNLOADER FAST</div>
-        <input type="text" id="url" placeholder="Tempel link video di sini...">
-        <button onclick="download()">GENERATE LINK</button>
+        <input type="text" id="urlInput" placeholder="Tempel link video di sini...">
+        <button onclick="gas()">GENERATE LINK</button>
         <div id="hasil"></div>
     </div>
-
     <div class="footer">© 2026 Abdurrahman Mulia<br>Barabai, Hulu Sungai Tengah</div>
 
     <script>
-        async function download() {
-            const link = document.getElementById('url').value;
+        async function gas() {
+            const link = document.getElementById('urlInput').value;
             const resBox = document.getElementById('hasil');
-            if(!link) return alert("Masukkan link-nya dulu!");
-
+            if(!link) return alert("Linknya mana?");
             resBox.style.display = "block";
-            resBox.innerHTML = "⌛ Sedang memproses video...";
-
+            resBox.innerHTML = "⌛ Mencoba Server 1...";
             try {
-                // MENGGUNAKAN API AGGREGATOR (Lebih Kuat)
-                const api = await fetch(`https://api.agatz.xyz/api/tiktok?url=${encodeURIComponent(link)}`);
-                const res = await api.json();
-                
+                let response = await fetch(`https://api.agatz.xyz/api/tiktok?url=${encodeURIComponent(link)}`);
+                let res = await response.json();
                 if(res.status === 200) {
-                    const video = res.data.data[0].url; // Ambil video tanpa WM
-                    resBox.innerHTML = `
-                        <p style="color:#00d2ff;">✅ Video Berhasil Ditemukan!</p>
-                        <a href="${video}" class="dl-btn" target="_blank">UNDUH SEKARANG</a>
-                    `;
+                    resBox.innerHTML = `<p>✅ Server 1 Berhasil!</p><a href="${res.data.data[0].url}" class="dl-btn" target="_blank">UNDUH VIDEO</a>`;
                 } else {
-                    resBox.innerHTML = "❌ API Limit. Coba lagi 1 menit lagi.";
+                    throw new Error();
                 }
             } catch (e) {
-                resBox.innerHTML = "⚠️ Masalah Koneksi API. Coba ganti link!";
+                resBox.innerHTML = "⌛ Server 1 Sibuk, Mencoba Server 2...";
+                try {
+                    let response2 = await fetch(`https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(link)}`);
+                    let res2 = await response2.json();
+                    resBox.innerHTML = `<p>✅ Server 2 Berhasil!</p><a href="${res2.result.video.noWatermark}" class="dl-btn" target="_blank">UNDUH VIDEO</a>`;
+                } catch (e2) {
+                    resBox.innerHTML = "❌ Semua Server Sibuk. Coba link video lain!";
+                }
             }
         }
     </script>
